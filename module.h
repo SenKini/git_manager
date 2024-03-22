@@ -1,0 +1,22 @@
+#pragma once
+#include <QString>
+
+enum ErrCode {
+	NONE,
+	OK,
+	TIMEOUT,
+	ADD_ERROR,
+	COMMIT_ERROR,
+	PUSH_ERROR,
+	PULL_ERROR,
+	CLONE_ERROR,
+	JSON_ERROR,
+	REPLY_ERROR,
+	NO_BRANCH,
+	OBJ_EMPTY,
+	FILE_ERROR,
+	READ_ERROR,
+	OTHER_ERROR
+};
+
+static QString errorMess;
