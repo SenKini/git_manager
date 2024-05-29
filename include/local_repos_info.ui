@@ -6,46 +6,13 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>396</width>
-    <height>366</height>
+    <width>403</width>
+    <height>368</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>LocalReposInfo</string>
   </property>
-  <widget class="QListWidget" name="localReposList">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>30</y>
-     <width>141</width>
-     <height>321</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QListWidget" name="branchList">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>30</y>
-     <width>151</width>
-     <height>321</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>53</width>
-     <height>15</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>本地仓库：</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
@@ -71,6 +38,39 @@
    <property name="text">
     <string>设为
 当前分支</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>53</width>
+     <height>15</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>本地仓库：</string>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="branchList">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>30</y>
+     <width>151</width>
+     <height>321</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QListWidget" name="localReposList">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>30</y>
+     <width>141</width>
+     <height>321</height>
+    </rect>
    </property>
   </widget>
  </widget>
