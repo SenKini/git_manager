@@ -10,18 +10,17 @@ bool Persistence::readInfoByLocalFile(QStringList &localRepos, QStringList &toke
     QFile saveFile(_SAVE_PATH);
 
     if (saveFile.open(QFile::ReadOnly)) {
-        QDataStream dataStream(&saveFile);
         QString buf = "";
 
         while (true) {
-            dataStream >> buf;
+            buf = saveFile.readLine();
             if (buf != "\n")
                 localRepos.push_back(buf);
             else
                 break;
         }
         while (true) {
-            dataStream >> buf;
+            buf = saveFile.readLine();
             if (buf != "\n")
                 tokens.push_back(buf);
             else
@@ -45,10 +44,10 @@ bool Persistence::saveInfoToLocalFile(QStringList localRepos, QStringList tokens
         QDataStream dataStream(&saveFile);
 
         for (auto repo : localRepos)
-            dataStream << repo;
+            saveFile.write(repo.toUtf8() + "\n");
         dataStream << "\n";
-        for (auto token : localRepos)
-            dataStream << token;
+        for (auto token : tokens)
+            saveFile.write(token.toUtf8() + "\n");
         dataStream << "\n";
 
         return true;

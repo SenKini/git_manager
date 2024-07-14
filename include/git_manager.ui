@@ -268,21 +268,21 @@
      <height>33</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu">
+   <widget class="QMenu" name="repoInfoMenu">
     <property name="title">
      <string>仓库信息</string>
     </property>
     <addaction name="localReposAction"/>
    </widget>
-   <widget class="QMenu" name="menu_2">
+   <widget class="QMenu" name="switchMenu">
     <property name="title">
      <string>切换</string>
     </property>
     <addaction name="githubAction"/>
     <addaction name="giteeAction"/>
    </widget>
-   <addaction name="menu"/>
-   <addaction name="menu_2"/>
+   <addaction name="repoInfoMenu"/>
+   <addaction name="switchMenu"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="localReposAction">

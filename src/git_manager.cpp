@@ -59,22 +59,27 @@ void GitManager::updateRepoInfo() {
 }
 
 bool GitManager::readInfoAll() {
+    logger->addLog("info", "Read local saved info");
     QStringList tokens;
 
     if (_persist->readInfoByLocalFile(_localRepos, tokens)) {
+        logger->addLog("info", "Successfully readed saved info");
         for (int i = 0; i < tokens.size(); i++)
             _clients[i].token = tokens[i];
         return true;
     }
     else
-        return false;
+        logger->addLog("info", "Reading saved info failed");
+    return false;
 }
 
 bool GitManager::saveInfoAll() {
+    logger->addLog("info", "Saving info to local");
     QStringList tokens;
 
     for (auto c : _clients)
-        tokens.append(c.token);
+        if (!c.token.isEmpty())
+            tokens.append(c.token);
     return _persist->saveInfoToLocalFile(_localRepos, tokens);
 }
 
@@ -87,14 +92,19 @@ GitClient *GitManager::newGitClient(QString token) {
     return nullptr;
 }
 
+void GitManager::clearView() {
+    _ui.headImageLabel->clear();
+    _ui.repoNumLabel->clear();
+    _ui.followerNumLabel->clear();
+    _ui.remoteReposList->clear();
+    _ui.loginNameLabel->clear();
+}
+
 GitManager::GitManager(QWidget *parent)
     : QMainWindow(parent), _gitType(GITHUB), _persist(Persistence::getInstance()), _localReposInfo(nullptr) {
     _ui.setupUi(this);
 
     _ui.promptLabel->setVisible(false);  // 隐藏错误提示信息
-
-    for (auto c : _clients)
-        c.client = nullptr;
 
     // 尝试读取保存在本地的信息
     if (readInfoAll()) {
@@ -109,14 +119,16 @@ GitManager::GitManager(QWidget *parent)
         }
     }
 
-    connect(_ui.loginButton, &QPushButton::clicked, this, &GitManager::onLoginClicked);                // 连接登录按钮
-    connect(_ui.addLocalRepoButton, &QPushButton::clicked, this, &GitManager::onAddLocalRepoClicked);  // 连接添加按钮
-    connect(_ui.commitButton, &QPushButton::clicked, this, &GitManager::onCommitClicked);              // 连接提交按钮
-    connect(_ui.pushButton, &QPushButton::clicked, this, &GitManager::onPushClicked);                  // 连接推送按钮
-    connect(_ui.pullButton, &QPushButton::clicked, this, &GitManager::onPullClicked);                  // 连接拉取按钮
-    connect(_ui.lookOverButton, &QPushButton::clicked, this, &GitManager::onLookOverClicked);          // 连接查看按钮
-    connect(_ui.localReposAction, &QAction::triggered, this, &GitManager::onLocalRepoClicked);
-    connect(_ui.refreshRemoteButton, &QPushButton::clicked, this, &GitManager::onRefreshRemoteRepoClicked);
+    connect(_ui.loginButton, &QPushButton::clicked, this, &GitManager::onLoginClicked);                      // 连接登录按钮
+    connect(_ui.addLocalRepoButton, &QPushButton::clicked, this, &GitManager::onAddLocalRepoClicked);        // 连接添加按钮
+    connect(_ui.commitButton, &QPushButton::clicked, this, &GitManager::onCommitClicked);                    // 连接提交按钮
+    connect(_ui.pushButton, &QPushButton::clicked, this, &GitManager::onPushClicked);                        // 连接推送按钮
+    connect(_ui.pullButton, &QPushButton::clicked, this, &GitManager::onPullClicked);                        // 连接拉取按钮
+    connect(_ui.lookOverButton, &QPushButton::clicked, this, &GitManager::onLookOverClicked);                // 连接查看按钮
+    connect(_ui.localReposAction, &QAction::triggered, this, &GitManager::onLocalRepoClicked);               // 连接本地仓库分支按钮
+    connect(_ui.refreshRemoteButton, &QPushButton::clicked, this, &GitManager::onRefreshRemoteRepoClicked);  // 连接刷新远程仓库按钮
+    connect(_ui.githubAction, &QAction::triggered, this, &GitManager::onGithubClicked);
+    connect(_ui.giteeAction, &QAction::triggered, this, &GitManager::onGiteeClicked);
 
     connect(_ui.remoteReposList, &QListWidget::clicked, [&] {
         _ui.commitButton->setEnabled(false);
@@ -131,10 +143,11 @@ GitManager::GitManager(QWidget *parent)
 }
 
 GitManager::~GitManager() {
+    saveInfoAll();
     delete _localReposInfo;
     for (auto c : _clients)
-        delete c.client;
-    saveInfoAll();
+        if (c.client != nullptr)
+            delete c.client;
 }
 
 void GitManager::onLoginClicked() {
@@ -253,4 +266,24 @@ void GitManager::onLocalRepoClicked() {
     _localReposInfo = new LocalReposInfo(_localRepos);
     _localReposInfo->setWindowModality(Qt::ApplicationModal);  // 阻塞其他窗口
     _localReposInfo->show();
+}
+
+void GitManager::onGithubClicked() {
+    logger->addLog("info", "Switch Github");
+    _gitType = GITHUB;
+    clearView();
+    if (_clients[_gitType].client != nullptr) {
+        updateBaseInfo();
+        updateRepoInfo();
+    }
+}
+
+void GitManager::onGiteeClicked() {
+    logger->addLog("info", "Switch Gitee");
+    _gitType = GITEE;
+    clearView();
+    if (_clients[_gitType].client != nullptr) {
+        updateBaseInfo();
+        updateRepoInfo();
+    }
 }

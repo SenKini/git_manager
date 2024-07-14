@@ -24,7 +24,7 @@ enum GitType {
 };
 
 struct GitClients {
-    GitClient *client;
+    GitClient *client = nullptr;
     QString token;
 };
 
@@ -33,18 +33,19 @@ class GitManager : public QMainWindow {
 
 private:
     Ui::GitManagerClass _ui;
-    GitType _gitType;                  // 当前是哪一个 git 平台
+    GitType _gitType;                 // 当前是哪一个 git 平台
     QVector<GitClients> _clients{2};  // 两个 git 平台
     QStringList _localRepos;          // 本地仓库路径
-    Persistence *_persist;             // 持久化
+    Persistence *_persist;            // 持久化
     LocalReposInfo *_localReposInfo;  // 本地仓库信息
 
-    void updateLocalRepos();  // 更新本地仓库显示
-    void updateBaseInfo();    // 更新基本信息
-    void updateRepoInfo();    // 更新仓库信息
-    bool readInfoAll();
-    bool saveInfoAll();
-    GitClient *newGitClient(QString token);
+    void updateLocalRepos();                 // 更新本地仓库显示
+    void updateBaseInfo();                   // 更新基本信息
+    void updateRepoInfo();                   // 更新仓库信息
+    bool readInfoAll();                      // 读取本地信息
+    bool saveInfoAll();                      // 保存信息到本地
+    GitClient *newGitClient(QString token);  // 根据 _gitType 创建一个 GitClient
+    void clearView();                        // 清除当前显示的内容
 
 public:
     GitManager(QWidget *parent = nullptr);
@@ -62,4 +63,6 @@ public Q_SLOTS:
     void onLookOverClicked();                    // 查看事件
     void onRemoveRepoClicked(QString repoName);  // 移除本地仓库事件
     void onLocalRepoClicked();                   // 查看本地仓库分支事件
+    void onGithubClicked();                      // 切换到 Github
+    void onGiteeClicked();                       // 切换到 Gitee
 };
